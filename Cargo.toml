@@ -1,0 +1,21 @@
+[package]
+name = "dig6"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = ["."]
+resolver = "2"
+
+[dependencies]
+chrono = { workspace = true }
+ratatui = { workspace = true }
+color-eyre = { workspace = true }
+thiserror = { workspace = true }
+
+[workspace.dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+ratatui = "0.29"
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "2"
+color-eyre = "0.6"
