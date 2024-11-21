@@ -1,1 +1,8 @@
 /target
+
+# Ignore all .toml files
+*.toml
+
+# Except Cargo.toml and rustfmt.toml
+!Cargo.toml
+!rustfmt.toml
