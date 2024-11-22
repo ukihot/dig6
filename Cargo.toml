@@ -1,19 +1,21 @@
 [package]
-name = "dig6"
-version = "0.1.0"
+name = "digger"
+version = "0.6.0"
 edition = "2021"
+authors = ["Yu Tokunaga<tokunaga@grill-ware.com>"]
 
 [workspace]
-members = ["."]
+members = [".", "dapplication", "ddomain", "dinfrastructure", "dpresentation"]
 resolver = "2"
 
 [dependencies]
-chrono = { workspace = true }
+dpresentation = { path = "./dpresentation" }
+ddomain = { path = "./ddomain" }
+dinfrastructure = { path = "./dinfrastructure" }
+dapplication = { path = "./dapplication" }
 ratatui = { workspace = true }
 serde = { workspace = true }
 color-eyre = { workspace = true }
-thiserror = { workspace = true }
-toml = { workspace = true }
 clap = { version = "4.5", features = ["derive"] }
 
 [workspace.dependencies]
@@ -22,4 +24,3 @@ ratatui = "0.29"
 serde = { version = "1.0", features = ["derive"] }
 thiserror = "2"
 color-eyre = "0.6"
-toml = "0.8"

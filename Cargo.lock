@@ -284,6 +284,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "dapplication"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "color-eyre",
+ "ddomain",
+ "ratatui",
+ "serde",
+]
+
+[[package]]
 name = "darling"
 version = "0.20.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -319,22 +330,58 @@ dependencies = [
 ]
 
 [[package]]
+name = "ddomain"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "color-eyre",
+ "ratatui",
+ "serde",
+ "thiserror",
+ "toml",
+]
+
+[[package]]
 name = "diff"
 version = "0.1.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56254986775e3233ffa9c4d7d3faaf6d36a2c09d30b20687e9f88bc8bafc16c8"
 
 [[package]]
-name = "dig6"
+name = "digger"
+version = "0.6.0"
+dependencies = [
+ "clap",
+ "color-eyre",
+ "dapplication",
+ "ddomain",
+ "dinfrastructure",
+ "dpresentation",
+ "ratatui",
+ "serde",
+]
+
+[[package]]
+name = "dinfrastructure"
 version = "0.1.0"
 dependencies = [
  "chrono",
- "clap",
  "color-eyre",
+ "dapplication",
+ "ddomain",
+ "serde",
+ "toml",
+]
+
+[[package]]
+name = "dpresentation"
+version = "0.1.0"
+dependencies = [
+ "color-eyre",
+ "dapplication",
+ "ddomain",
  "ratatui",
  "serde",
- "thiserror",
- "toml",
 ]
 
 [[package]]

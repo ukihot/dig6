@@ -1,0 +1,11 @@
+[package]
+name = "dpresentation"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dapplication = { path = "../dapplication" }
+ddomain = { path = "../ddomain" }
+ratatui = { workspace = true }
+serde = { workspace = true }
+color-eyre = { workspace = true }

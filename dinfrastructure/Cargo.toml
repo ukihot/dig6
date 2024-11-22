@@ -1,0 +1,12 @@
+[package]
+name = "dinfrastructure"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ddomain = { path = "../ddomain" }
+dapplication = { path = "../dapplication" }
+chrono = { workspace = true }
+serde = { workspace = true }
+color-eyre = { workspace = true }
+toml = "0.8"

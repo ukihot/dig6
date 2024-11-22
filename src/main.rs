@@ -1,12 +1,12 @@
-mod app;
-mod app_errors;
-
-use crate::app::App;
-use crate::app::Ticket;
 use clap::{Parser, Subcommand};
 use color_eyre::Result;
-use serde::Deserialize;
-use std::fs;
+use dapplication::interactors::terminal_interactor::TerminalInteractor;
+use ddomain::repositories::ticket_repository::TicketRepository;
+use dinfrastructure::ticket_repository_impl::TicketRepositoryImpl;
+use dpresentation::{
+    controllers::terminal_controller::TerminalController,
+    presenters::ratatui_presenter::RatatuiPresenter,
+};
 use std::path::Path;
 
 #[derive(Parser)]
@@ -37,7 +37,12 @@ fn main() -> Result<()> {
                 format!("{}.toml", file_name)
             };
 
-            ensure_file_exists_with_template(&file_path)?;
+            let repository: Box<dyn TicketRepository> =
+                Box::new(TicketRepositoryImpl::new(file_path.clone()));
+
+            // ファイルが存在しない場合、リポジトリ側でファイルを生成
+            repository.ensure_file_exists_with_template()?;
+
             println!("新しいファイルが生成されました: {}", file_path);
         }
         Commands::Run { file_name } => {
@@ -47,48 +52,24 @@ fn main() -> Result<()> {
                 format!("{}.toml", file_name)
             };
 
-            ensure_file_exists_with_template(&file_path)?;
-            let tickets_data = deserial_toml_file::<app::Tickets>(&file_path)?;
+            let repository = TicketRepositoryImpl::new(file_path.clone());
+            let presenter = RatatuiPresenter::new();
 
-            let terminal = ratatui::init();
-            App::new(tickets_data.tickets).run(terminal)?;
+            // ファイルが存在しない場合、リポジトリ側でファイルを生成
+            repository.ensure_file_exists_with_template()?;
+
+            // TerminalInteractorを使ってTerminalControllerを生成
+            let terminal_interactor = TerminalInteractor::new(repository, presenter)?;
+
+            // エラー処理が成功した場合にのみTerminalControllerを作成
+            let terminal_controller = TerminalController::new(terminal_interactor);
+
+            // ターミナルコントローラの実行
+            terminal_controller.run(ratatui::init())?;
+
             ratatui::restore();
         }
     }
 
-    Ok(())
-}
-
-fn deserial_toml_file<T>(path: &str) -> Result<T, crate::app_errors::AppError>
-where
-    T: for<'a> Deserialize<'a>,
-{
-    let file_str = std::fs::read_to_string(path).map_err(crate::app_errors::AppError::FileRead)?;
-    if file_str.trim().is_empty() {
-        Err(crate::app_errors::AppError::EmptyFile)
-    } else {
-        toml::from_str(&file_str).map_err(crate::app_errors::AppError::TomlParse)
-    }
-}
-
-fn ensure_file_exists_with_template(file_path: &str) -> Result<()> {
-    let path = Path::new(file_path);
-
-    if !path.exists() {
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?;
-        }
-
-        // デフォルトのチケットリストを生成
-        let default_ticket = Ticket::default();
-
-        let tickets = app::Tickets {
-            tickets: vec![default_ticket],
-        };
-
-        // TOML のシリアライズ
-        let template = toml::to_string_pretty(&tickets)?;
-        fs::write(file_path, template)?;
-    }
     Ok(())
 }
